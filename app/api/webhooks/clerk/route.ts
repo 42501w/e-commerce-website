@@ -1,22 +1,35 @@
 import { createSanityUser } from "@/sanity/helpers/userOperations";
+import { NextResponse } from "next/server";
+
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
 
 export async function POST(req: Request) {
   const token = req.headers.get("authorization");
 
-  // You can customize the token value and logic here
   if (!token || token !== `Bearer ${process.env.MY_SECRET_TOKEN}`) {
     return new Response("Unauthorized", { status: 401 });
   }
 
   try {
+    // For webhooks requiring raw body verification, use:
+    // const rawBody = await req.text();
+    // Then verify signature and parse JSON manually
+    
+    // If no raw body needed, keep using req.json()
     const payload = await req.json();
-
-    // Optionally call your user creation logic
+    
     await createSanityUser(payload);
 
-    return new Response("Webhook handled successfully", { status: 200 });
+    return NextResponse.json(
+      { message: "Webhook handled successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Webhook error:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
