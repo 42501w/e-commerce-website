@@ -8,14 +8,14 @@ export async function POST(req: Request) {
   const token = req.headers.get("authorization");
 
   if (!token || token !== `Bearer ${process.env.MY_SECRET_TOKEN}`) {
-    return new Response("Unauthorized", { status: 401 });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   try {
     // For webhooks requiring raw body verification, use:
     // const rawBody = await req.text();
     // Then verify signature and parse JSON manually
-    
+
     // If no raw body needed, keep using req.json()
     const payload = await req.json();
     
