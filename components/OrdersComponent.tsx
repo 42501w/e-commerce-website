@@ -1,4 +1,4 @@
-import { Order } from "@/types/order";
+import { Order } from "@/app/types/order";
 
 interface OrdersComponentProps {
   orders: Order[];
