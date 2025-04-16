@@ -3,12 +3,12 @@ export const dynamic = "force-dynamic";
 
 import useCartStore from "@/store";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, Home, Package, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
-const SuccessPage = () => {
+const SuccessPageContent = () => {
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get("orderNumber");
   const sessionId = searchParams.get("session_id");
@@ -87,6 +87,14 @@ const SuccessPage = () => {
         </div>
       </motion.div>
     </div>
+  );
+};
+
+const SuccessPage = () => {
+  return (
+    <Suspense fallback={<div className="text-center py-10">Loading...</div>}>
+      <SuccessPageContent />
+    </Suspense>
   );
 };
 
